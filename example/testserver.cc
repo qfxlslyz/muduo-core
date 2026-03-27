@@ -55,7 +55,7 @@ int main() {
     EventLoop loop;
     InetAddress addr(8080);
     EchoServer server(&loop, addr, "EchoServer");
-    server.start();
-    loop.loop();
+    server.start();  // 将listenfd 通过epoll_ctl()添加到epoll
+    loop.loop();   // epoll_wait()以阻塞方式等待新用户连接、已连接用户的读写事件等
     return 0;
 }
