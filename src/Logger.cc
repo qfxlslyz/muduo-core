@@ -4,7 +4,7 @@
 #include "Timestamp.h"
 
 // 获取日志唯一的实例对象 单例
-Logger &Logger::instance()
+Logger& Logger::instance()
 {
     static Logger logger;
     return logger;

@@ -10,6 +10,7 @@ public:
     noncopyable &operator=(const noncopyable &) = delete;
     // void operator=(const noncopyable &) = delete;    // muduo将返回值变为void 这其实无可厚非
 protected:
+    // 构造函数声明为protected，只允许被继承，不允许外部直接实例化
     noncopyable() = default;
     ~noncopyable() = default;
 };
