@@ -1,3 +1,7 @@
 .vscode/
 /example/simple.cpp
 /example/simple.exe
+/example/simple
+/example/testserver
+/build
+/lib
