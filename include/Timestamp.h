@@ -14,7 +14,7 @@ public:
      * 不允许隐式写法：Timestamp t = 123;（会报错）
      * 编码规范：凡是“单参数构造函数”，默认优先加 explicit
      */
-    explicit Timestamp(int64_t microSecondsSinceEpoch);
+    explicit Timestamp(int64_t secondsSinceEpoch);
 
     /**
      * 笔记
@@ -27,5 +27,5 @@ public:
     std::string toString() const;
 
 private:
-    int64_t microSecondsSinceEpoch_;
+    int64_t secondsSinceEpoch_;
 };
