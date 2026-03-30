@@ -5,7 +5,7 @@
 #include "Logger.h"
 
 const int Channel::kNoneEvent = 0; //空事件
-const int Channel::kReadEvent = EPOLLIN | EPOLLPRI; //读事件
+const int Channel::kReadEvent = EPOLLIN | EPOLLPRI; //读事件：EPOLLIN	普通数据可读  EPOLLPRI	紧急数据可读
 const int Channel::kWriteEvent = EPOLLOUT; //写事件
 
 // EventLoop: ChannelList Poller
@@ -35,9 +35,10 @@ void Channel::tie(const std::shared_ptr<void> &obj)
     tie_ = obj;
     tied_ = true;
 }
+
 //update 和remove => EpollPoller 更新channel在poller中的状态
 /**
- * 当改变channel所表示的fd的events事件后，update负责再poller里面更改fd相应的事件epoll_ctl
+ * 当改变channel所表示的fd的events事件后，update负责在poller里面更改fd相应的事件epoll_ctl
  **/
 void Channel::update()
 {

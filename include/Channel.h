@@ -9,7 +9,8 @@
 class EventLoop;
 
 /**
- * 理清楚 EventLoop、Channel、Poller之间的关系  Reactor模型上对应多路事件分发器
+ * 理清楚 EventLoop、Channel、Poller之间的关系  三者在Reactor模型上对应多路事件分发器Demultiplex
+ * EventLoop包含Channel
  * Channel理解为通道 封装了sockfd和其感兴趣的event 如EPOLLIN、EPOLLOUT事件 还绑定了poller返回的具体事件
  **/
 class Channel : noncopyable

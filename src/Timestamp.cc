@@ -6,6 +6,7 @@ Timestamp::Timestamp() : secondsSinceEpoch_(0)
 {
 }
 
+// explicit修饰符只写在函数声明处，不要再写在函数实现处
 Timestamp::Timestamp(int64_t secondsSinceEpoch)
     : secondsSinceEpoch_(secondsSinceEpoch)
 {

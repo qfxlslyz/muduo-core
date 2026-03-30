@@ -3,6 +3,7 @@
 
 #include "InetAddress.h"
 
+// 参数默认值只写在函数声明处，不要再写在函数实现处
 InetAddress::InetAddress(uint16_t port, std::string ip)
 {
     ::memset(&addr_, 0, sizeof(addr_));
@@ -40,6 +41,8 @@ uint16_t InetAddress::toPort() const
 int main()
 {
     InetAddress addr(8080);
+    std::cout << addr.toIp() << std::endl;
+    std::cout << addr.toPort() << std::endl;
     std::cout << addr.toIpPort() << std::endl;
 }
 #endif
