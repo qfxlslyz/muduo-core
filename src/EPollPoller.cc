@@ -6,9 +6,20 @@
 #include "Logger.h"
 #include "Channel.h"
 
-const int kNew = -1;    // 某个channel还没添加至Poller          // channel的成员index_初始化为-1
+const int kNew = -1;    // 某个channel还没添加至Poller，channel的成员index_初始化为-1
 const int kAdded = 1;   // 某个channel已经添加至Poller
 const int kDeleted = 2; // 某个channel已经从Poller删除
+
+/**
+ * 多线程环境创建epoll使用epoll_create1(EPOLL_CLOEXEC)的意义：
+ * 1、防止FD泄露到子进程
+ * 如果当前进程后续执行了 fork + exec，这个epollfd_ 会在exec时被内核自动关闭，不会被新程序继承。
+ * 2、提升安全性与稳定性
+ * 避免无关子进程意外持有该FD，减少“句柄泄露”“资源不释放”“难排查阻塞”等问题
+ * 3、比“先创建再fcntl设置”更可靠
+ * epoll_create1(EPOLL_CLOEXEC)是原子设置；如果用epoll_create(1)后再fcntl(FD_CLOEXEC)，在多线程下可能出现竞态窗口
+ */
+
 
 EPollPoller::EPollPoller(EventLoop *loop)
     : Poller(loop)

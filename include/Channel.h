@@ -35,6 +35,7 @@ public:
     void tie(const std::shared_ptr<void> &);
 
     int fd() const { return fd_; }
+    // 使用epoll时的返回值：0->空事件 3->读事件 4->写事件
     int events() const { return events_; }
     void set_revents(int revt) { revents_ = revt; }
 
@@ -68,7 +69,7 @@ private:
     EventLoop *loop_; // 事件循环
     const int fd_;    // fd，Poller监听的对象
     int events_;      // 注册fd感兴趣的事件
-    int revents_;     // Poller返回的具体发生的事件
+    int revents_;     // Poller返回的具体发生的事件，使用epoll实现IO多路复用时的取值：0->空事件 3->读事件 4->写事件
     int index_;
 
     std::weak_ptr<void> tie_;

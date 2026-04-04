@@ -9,7 +9,7 @@
 /**
  * epoll的使用:
  * 1. epoll_create
- * 2. epoll_ctl (add, mod, del)
+ * 2. epoll_ctl   add/mod/del
  * 3. epoll_wait
  **/
 
@@ -20,6 +20,14 @@ class EPollPoller : public Poller
 public:
     EPollPoller(EventLoop *loop);
     ~EPollPoller() override;
+
+    /**
+     * override 的关键作用总结
+     * 编译时检查	确保函数确实覆盖了基类的虚函数
+     * 防止笔误	   避免因参数类型、const修饰符等错误导致意外重载(override修饰的成员函数必须在基类中找到参数类型、const修饰符完全一致的虚函数)
+     * 提高可读性	明确表明该函数的意图是覆盖基类函数
+     * 维护性      修改基类函数签名时，派生类会编译报错提醒更新
+     */
 
     // 重写基类Poller的抽象方法
     Timestamp poll(int timeoutMs, ChannelList *activeChannels) override;
