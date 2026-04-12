@@ -10,7 +10,7 @@ EventLoopThreadPool::EventLoopThreadPool(EventLoop *baseLoop, const std::string 
 
 EventLoopThreadPool::~EventLoopThreadPool()
 {
-    // Don't delete loop, it's stack variable
+    // 线程池中的EventLoop指针指向的对象都在线程的栈空间上，自动释放，不需要而且也不能手动delete
 }
 
 void EventLoopThreadPool::start(const ThreadInitCallback &cb)
@@ -44,12 +44,14 @@ EventLoop *EventLoopThreadPool::getNextLoop()
     if(!loops_.empty())             
     {
         loop = loops_[next_];
-        ++next_;
+        
         // 轮询
-        if(next_ >= loops_.size())
-        {
-            next_ = 0;
-        }
+        next_ = (next_ + 1) % loops_.size();
+        // ++next_;
+        // if(next_ >= loops_.size())
+        // {
+        //     next_ = 0;
+        // }
     }
 
     return loop;

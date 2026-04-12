@@ -27,7 +27,7 @@ public:
     // 退出事件循环
     void quit();
 
-    Timestamp pollReturnTime() const { return pollRetureTime_; }
+    Timestamp pollReturnTime() const { return pollReturnTime_; }
 
     // 在当前loop中执行
     void runInLoop(Functor cb);
@@ -56,10 +56,10 @@ private:
 
     const pid_t threadId_; // 记录当前EventLoop是被哪个线程id创建的 即标识了当前EventLoop的所属线程id
 
-    Timestamp pollRetureTime_; // Poller返回发生事件的Channels的时间点
+    Timestamp pollReturnTime_; // Poller返回发生事件的Channels的时间点
     std::unique_ptr<Poller> poller_;
 
-    int wakeupFd_; // 作用：当mainLoop获取一个新用户的Channel 需通过轮询算法选择一个subLoop 通过该成员唤醒subLoop处理Channel
+    int wakeupFd_; // 巧妙设计，作用：当mainLoop获取一个新用户的Channel 需通过轮询算法选择一个subLoop 通过该成员唤醒subLoop处理Channel
     std::unique_ptr<Channel> wakeupChannel_;
 
     ChannelList activeChannels_; // 返回Poller检测到当前有事件发生的所有Channel列表

@@ -51,7 +51,7 @@ Timestamp EPollPoller::poll(int timeoutMs, ChannelList *activeChannels)
         LOG_INFO("%d events happend\n", numEvents); // LOG_DEBUG最合理
         fillActiveChannels(numEvents, activeChannels);
         if (numEvents == events_.size()) // 扩容操作
-        {
+        { 
             events_.resize(events_.size() * 2);
         }
     }
@@ -61,6 +61,7 @@ Timestamp EPollPoller::poll(int timeoutMs, ChannelList *activeChannels)
     }
     else
     {
+        // EINTR: 系统中断异常
         if (saveErrno != EINTR)
         {
             errno = saveErrno;

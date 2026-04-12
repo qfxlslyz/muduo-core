@@ -29,7 +29,15 @@ EventLoop *EventLoopThread::startLoop()
     EventLoop *loop = nullptr;
     {
         std::unique_lock<std::mutex> lock(mutex_);
+
         cond_.wait(lock, [this](){return loop_ != nullptr;});
+        // 等价写法：
+        // while (!loop_)
+        // {
+        //     // cond_.wait()：先释放lock，然后阻塞线程，等待cond_.notify_one()
+        //     cond_.wait(lock);
+        // }
+        
         loop = loop_;
     }
     return loop;
@@ -38,7 +46,7 @@ EventLoop *EventLoopThread::startLoop()
 // 下面这个方法 是在单独的新线程里运行的
 void EventLoopThread::threadFunc()
 {
-    EventLoop loop; // 创建一个独立的EventLoop对象 和上面的线程是一一对应的 级one loop per thread
+    EventLoop loop; // 创建一个独立的EventLoop对象 和上面的线程是一一对应的 one loop per thread
 
     if (callback_)
     {

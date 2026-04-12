@@ -24,7 +24,7 @@ public:
 private:
     void threadFunc();
 
-    EventLoop *loop_;
+    EventLoop *loop_;  // one loop per thread
     bool exiting_;
     Thread thread_;
     std::mutex mutex_;             // 互斥锁
