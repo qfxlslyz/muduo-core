@@ -30,11 +30,22 @@ public:
     const std::string name() const { return name_; } // 获取名字
 
 private:
-    EventLoop *baseLoop_; // 用户使用muduo创建的loop 如果线程数为1 那直接使用用户创建的loop 否则创建多EventLoop
-    std::string name_;//线程池名称，通常由用户指定，线程池中EventLoopThread名称依赖于线程池名称。
+    // 用户使用muduo创建的mainLoop，对应mainReactor
+    // 如果numThreads_设置为0，则回退到单Reactor模型
+    EventLoop *baseLoop_; 
+
+    //线程池名称，通常由用户指定，线程池中EventLoopThread名称依赖于线程池名称。
+    std::string name_;
+
     bool started_;//是否已经启动标志
-    int numThreads_;//线程池中新启动的线程数量，对应subReactor的数量
+
+    //线程池中的线程数量，对应subReactor的数量，专门负责与已建立连接的客户端之间进行业务处理
+    int numThreads_;
+
     int next_; // 新连接到来，所选择EventLoop的索引
+
     std::vector<std::unique_ptr<EventLoopThread>> threads_;//IO线程的列表
-    std::vector<EventLoop *> loops_;//线程池中EventLoop的列表，指向的是EVentLoopThread线程函数创建的EventLoop对象。
+    
+    // 对应subReactors，线程池中EventLoop的列表，指向的是EVentLoopThread线程函数创建的EventLoop对象。
+    std::vector<EventLoop *> loops_; 
 };

@@ -4,5 +4,6 @@
 /example/simple
 /example/testserver
 /example/echo_bench
+/example/epoll_echo
 /build
 /lib
