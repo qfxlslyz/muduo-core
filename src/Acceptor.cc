@@ -35,7 +35,9 @@ Acceptor::Acceptor(EventLoop *loop, const InetAddress &listenAddr, bool reusepor
 Acceptor::~Acceptor()
 {
     acceptChannel_.disableAll();    // 把从Poller中感兴趣的事件删除掉
-    acceptChannel_.remove();        // 调用EventLoop->removeChannel => Poller->removeChannel 把Poller的ChannelMap对应的部分删除
+
+    // 调用EventLoop->removeChannel => Poller->removeChannel 把Poller的ChannelMap对应的部分删除
+    acceptChannel_.remove();        
 }
 
 void Acceptor::listen()

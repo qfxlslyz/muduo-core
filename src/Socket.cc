@@ -19,6 +19,9 @@ void Socket::bindAddress(const InetAddress &localaddr)
     if (0 != ::bind(sockfd_, (sockaddr *)localaddr.getSockAddr(), sizeof(sockaddr_in)))
     {
         LOG_FATAL("bind sockfd:%d fail\n", sockfd_);
+
+        // 可以使用 __FILE__、__FUNCTION__、__LINE__ 等编译器预定义的宏更精确的找到报错位置
+        // LOG_FATAL("%s:%s:%d: bind sockfd:%d fail\n", __FILE__, __FUNCTION__, __LINE__, sockfd_);
     }
 }
 
