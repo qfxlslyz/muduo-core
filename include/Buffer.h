@@ -58,7 +58,7 @@ public:
     std::string retrieveAllAsString() { return retrieveAsString(readableBytes()); }
     std::string retrieveAsString(size_t len)
     {
-        std::string result(peek(), len);
+        std::string result(peek(), len);  // 从peek()指向地址的连续len字节进行拷贝，构造string对象
         retrieve(len); // 上面一句把缓冲区中可读的数据已经读取出来 这里肯定要对缓冲区进行复位操作
         return result;
     }
@@ -72,7 +72,7 @@ public:
         }
     }
 
-    // 把[data, data+len]内存上的数据添加到writable缓冲区当中
+    // 把[data, data+len)内存上的数据添加到writable缓冲区当中
     void append(const char *data, size_t len)
     {
         ensureWritableBytes(len);
