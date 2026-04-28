@@ -27,8 +27,8 @@ public:
 
     enum Option
     {
-        kNoReusePort,//不允许重用本地端口
-        kReusePort,//允许重用本地端口
+        kNoReusePort, //不允许重用本地端口
+        kReusePort,  //允许重用本地端口
     };
 
     TcpServer(EventLoop *loop,
