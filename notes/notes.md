@@ -42,7 +42,7 @@ Average RTT
 https://github.com/qingshan-z/cpp-study_shilei/blob/main/%E3%80%90%E9%AB%98%E7%BA%A7%E3%80%91%E6%89%8B%E5%86%99C%2B%2B%20Muduo%E7%BD%91%E7%BB%9C%E5%BA%93%E9%A1%B9%E7%9B%AE-%E6%8E%8C%E6%8F%A1%E9%AB%98%E6%80%A7%E8%83%BD%E7%BD%91%E7%BB%9C%E5%BA%93%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/%E7%AC%94%E8%AE%B0/36%20TcpServer%E4%BB%A3%E7%A0%81%E8%AE%B2%E8%A7%A3%E4%BA%8C%EF%BC%8843%E5%88%86%E9%92%9F%EF%BC%89.md
 
 # 编译使用在系统库中的muduo
-g++ -std=c++11 main.cpp -o echo_server -lmuduo_core -lpthread
+g++ -std=c++14 main.cpp -o echo_server -lmuduo_core -lpthread
 
 # 简单测试服务器是否正常工作
 telnet 127.0.0.1 8080
