@@ -46,3 +46,10 @@ g++ -std=c++14 main.cpp -o echo_server -lmuduo_core -lpthread
 
 # 简单测试服务器是否正常工作
 telnet 127.0.0.1 8080
+
+# 切换为DEBUG模式进行编译
+Ctrl + Shift + P
+搜索并执行：
+CMake: Select Varient
+选择
+Debug

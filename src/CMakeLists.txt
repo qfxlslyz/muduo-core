@@ -6,3 +6,8 @@ add_library(muduo_core SHARED ${SRC_FILES})
 
 #设置头文件的路径
 target_include_directories(muduo_core PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+#Debug构建时启用LOG_DEBUG
+target_compile_definitions(muduo_core PUBLIC
+    $<$<CONFIG:Debug>:MUDEBUG>
+)
