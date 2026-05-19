@@ -23,8 +23,8 @@ TcpServer::TcpServer(EventLoop *loop,
     , name_(nameArg)
     , acceptor_(std::make_unique<Acceptor>(loop, listenAddr, option == kReusePort))
     , threadPool_(std::make_shared<EventLoopThreadPool>(loop, name_))
-    , connectionCallback_()
-    , messageCallback_()
+    , connectionCallback_(defaultConnectionCallback)
+    , messageCallback_(defaultMessageCallback)
     , started_(false)
     , nextConnId_(1)
 {
@@ -87,7 +87,9 @@ void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
     InetAddress localAddr(local);
     TcpConnectionPtr conn = std::make_shared<TcpConnection>(ioLoop, connName, sockfd, localAddr, peerAddr);
     connections_[connName] = conn;
-    // 下面的回调都是用户设置给TcpServer => TcpConnection的，至于Channel绑定的则是TcpConnection设置的四个，handleRead,handleWrite... 这下面的回调用于handlexxx函数中
+    // 下面的回调都是用户设置给TcpServer，再由TcpServer传递给TcpConnection的
+    // 至于Channel绑定的则是TcpConnection设置的四个
+    // handleRead,handleWrite... 这下面的回调用于handlexxx函数中
     conn->setConnectionCallback(connectionCallback_);
     conn->setMessageCallback(messageCallback_);
     conn->setWriteCompleteCallback(writeCompleteCallback_);

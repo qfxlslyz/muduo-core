@@ -15,6 +15,20 @@
 #include "Channel.h"
 #include "EventLoop.h"
 
+// 连接建立或断开的默认回调函数
+void defaultConnectionCallback(const TcpConnectionPtr &conn)   
+{
+    LOG_INFO("%s -> %s is %s", conn->localAddress().toIpPort().c_str(),
+                               conn->peerAddress().toIpPort().c_str(),
+                               conn->connected() ? "UP" : "DOWN");
+}
+
+// 可读写事件默认回调函数，未被用到的参数最好不要写参数名，避免编译器报 unused parameter 警告
+void defaultMessageCallback(const TcpConnectionPtr &, Buffer *buf, Timestamp)
+{
+    buf->retrieveAll();
+}
+
 static EventLoop *CheckLoopNotNull(EventLoop *loop)
 {
     if (loop == nullptr)
