@@ -21,12 +21,12 @@ TcpServer::TcpServer(EventLoop *loop,
     : loop_(CheckLoopNotNull(loop))
     , ipPort_(listenAddr.toIpPort())
     , name_(nameArg)
-    , acceptor_(new Acceptor(loop, listenAddr, option == kReusePort))
-    , threadPool_(new EventLoopThreadPool(loop, name_))
+    , acceptor_(std::make_unique<Acceptor>(loop, listenAddr, option == kReusePort))
+    , threadPool_(std::make_shared<EventLoopThreadPool>(loop, name_))
     , connectionCallback_()
     , messageCallback_()
+    , started_(false)
     , nextConnId_(1)
-    , started_(0)
 {
     // 当有新用户连接时，Acceptor类中绑定的acceptChannel_会有读事件发生，执行handleRead()调用TcpServer::newConnection回调
     acceptor_->setNewConnectionCallback(
@@ -48,14 +48,14 @@ TcpServer::~TcpServer()
 // 设置底层subloop的个数
 void TcpServer::setThreadNum(int numThreads)
 {
-    int numThreads_=numThreads;
-    threadPool_->setThreadNum(numThreads_);
+    threadPool_->setThreadNum(numThreads);
 }
 
 // 开启服务器监听
 void TcpServer::start()
 {
-    if (started_.fetch_add(1) == 0)    // 防止一个TcpServer对象被start多次
+    // exchange()负责返回原子变量旧值，同时将原子变量设置为传入参数指定的新值
+    if (!started_.exchange(true))    // 防止一个TcpServer对象被start多次
     {
         threadPool_->start(threadInitCallback_);    // 启动底层的loop线程池
         loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
@@ -65,11 +65,11 @@ void TcpServer::start()
 // 有一个新用户连接，acceptor会执行这个回调操作，负责将mainLoop接收到的请求连接(acceptChannel_会有读事件发生)通过回调轮询分发给subLoop去处理
 void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
 {
-   // 轮询算法 选择一个subLoop 来管理connfd对应的channel
+    // 轮询算法 选择一个subLoop 来管理connfd对应的channel
     EventLoop *ioLoop = threadPool_->getNextLoop();
     char buf[64] = {0};
     snprintf(buf, sizeof buf, "-%s#%d", ipPort_.c_str(), nextConnId_);
-    ++nextConnId_;  // 这里没有设置为原子类是因为其只在mainloop中执行 不涉及线程安全问题
+    ++nextConnId_;  // nextConnId_ 没有设置为原子类是因为其只在mainloop中执行 不涉及线程安全问题
     std::string connName = name_ + buf;
 
     LOG_INFO("TcpServer::newConnection [%s] - new connection [%s] from %s\n",
@@ -85,11 +85,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
     }
 
     InetAddress localAddr(local);
-    TcpConnectionPtr conn(new TcpConnection(ioLoop,
-                                            connName,
-                                            sockfd,
-                                            localAddr,
-                                            peerAddr));
+    TcpConnectionPtr conn = std::make_shared<TcpConnection>(ioLoop, connName, sockfd, localAddr, peerAddr);
     connections_[connName] = conn;
     // 下面的回调都是用户设置给TcpServer => TcpConnection的，至于Channel绑定的则是TcpConnection设置的四个，handleRead,handleWrite... 这下面的回调用于handlexxx函数中
     conn->setConnectionCallback(connectionCallback_);

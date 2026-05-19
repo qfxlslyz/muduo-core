@@ -33,8 +33,8 @@ TcpConnection::TcpConnection(EventLoop *loop,
     , name_(nameArg)
     , state_(kConnecting)
     , reading_(true)
-    , socket_(new Socket(sockfd))
-    , channel_(new Channel(loop, sockfd))
+    , socket_(std::make_unique<Socket>(sockfd))
+    , channel_(std::make_unique<Channel>(loop, sockfd))
     , localAddr_(localAddr)
     , peerAddr_(peerAddr)
     , highWaterMark_(64 * 1024 * 1024) // 64M
@@ -167,6 +167,7 @@ void TcpConnection::connectEstablished()
     // 新连接建立 执行回调
     connectionCallback_(shared_from_this());
 }
+
 // 连接销毁
 void TcpConnection::connectDestroyed()
 {
